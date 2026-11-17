@@ -1255,7 +1255,9 @@ function Invoke-AutopilotExport {
         Write-Host "Evidence manifest: export-manifest.json (SHA-256 $manifestHash). Record this hash with the request."
         if ($adminMode) {
             Write-Host ''
-            Write-Host "Remove your temporary access to the OneDrive of $TargetUser now, for example in the SharePoint admin center, or with SharePoint Online PowerShell:" -ForegroundColor Yellow
+            Write-Host "Remove your temporary access to the OneDrive of $TargetUser now. Open this page, remove $userName from Site Collection Administrators, and select OK:" -ForegroundColor Yellow
+            Write-Host "  $($location.SiteRoot)/_layouts/15/mngsiteadmin.aspx"
+            Write-Host 'Or, with the SharePoint Online Management Shell module, after Connect-SPOService:'
             Write-Host "  Set-SPOUser -Site '$($location.SiteRoot)' -LoginName '$userName' -IsSiteCollectionAdmin `$false"
         }
         if (-not $NoOpen -and $script:OnWindows) { Invoke-Item -LiteralPath $output }

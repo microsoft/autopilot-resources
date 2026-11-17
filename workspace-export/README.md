@@ -44,7 +44,7 @@ A tenant administrator can export another user's Autopilot workspace for an appr
 
    `-TargetOneDriveUrl` is optional; without it the tool tries to find the user's OneDrive automatically.
 3. Sign in with your administrator account, which `-Account` preselects. Your Windows account does not matter; only the browser sign-in identifies you as the administrator. If Edge signs you in automatically with a different account, copy the sign-in address that the tool prints into an InPrivate window (Ctrl+Shift+N). The tool finds the user's OneDrive and confirms that its owner matches `-TargetUser`. It then shows the workspace found and asks you to type the user's sign-in name to confirm.
-4. When the export finishes, remove your access. The tool prints a `Set-SPOUser ... -IsSiteCollectionAdmin $false` command for this, or you can use the SharePoint admin center.
+4. When the export finishes, remove your access. The tool prints a link to the user's **Site Collection Administrators** page, ending in `/_layouts/15/mngsiteadmin.aspx`. Open it, remove your account, and select **OK**. If you use the SharePoint Online Management Shell, the tool also prints the equivalent `Set-SPOUser` command.
 
 The export's `export-manifest.json` records who exported the data, for whom, when and why, with a fingerprint of every file. The tool prints the manifest's own SHA-256 hash at the end; record it with the request.
 

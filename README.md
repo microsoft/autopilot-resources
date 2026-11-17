@@ -4,7 +4,7 @@ Resources for administrators and users of Autopilot in Microsoft Copilot, plus a
 
 ## Autopilot
 
-- [Export an Autopilot workspace](autopilot/README.md): download a private copy of an Autopilot workspace, including memories and sessions, to a Windows PC. Users can export their own workspace, and tenant administrators can export a user's workspace for a compliance or privacy request. [Download the tool](autopilot/Autopilot-Workspace-Export.zip).
+- [Export an Autopilot workspace](workspace-export/README.md): download a private copy of an Autopilot workspace, including memories and sessions, to a Windows PC. Users can export their own workspace, and tenant administrators can export a user's workspace for a compliance or privacy request. [Download the tool](workspace-export/Autopilot-Workspace-Export.zip).
 
 ## Scout Desktop
 

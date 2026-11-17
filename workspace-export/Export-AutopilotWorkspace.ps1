@@ -64,6 +64,7 @@ $script:GraphScope = 'https://graph.microsoft.com/.default offline_access'
 $script:GraphAudiences = @('https://graph.microsoft.com', '00000003-0000-0000-c000-000000000000')
 $script:SharePointAppId = '00000003-0000-0ff1-ce00-000000000000'
 $script:SignInTimeoutSeconds = 300
+$script:TargetUserForGuidance = ''
 $script:OnWindows = ($PSVersionTable.PSEdition -eq 'Desktop') -or ((Get-Variable -Name IsWindows -ValueOnly -ErrorAction SilentlyContinue) -eq $true)
 
 function Stop-Export([string]$Message) {
@@ -790,6 +791,9 @@ function Resolve-TargetDriveLocation($Client, [string]$HostName, [string]$Target
     if ($driveInfo.Status -ne 200 -or -not $driveInfo.Json) { Stop-Export "Could not read the OneDrive of $Target (HTTP $($driveInfo.Status)). Nothing was downloaded." }
     $location = Get-PersonalDriveLocation ([string]$driveInfo.Json.webUrl)
     if ($location.SiteRoot -ne $siteRoot) { Stop-Export "The OneDrive address for $Target did not match its drive. Nothing was downloaded." }
+    # Drive metadata can be readable without access to its files, so confirm the files are readable too.
+    $rootInfo = Invoke-JsonGet $Client ("$($location.DriveApi)/root" + '?$select=id') $SharePointToken
+    if ($rootInfo.Status -eq 401 -or $rootInfo.Status -eq 403 -or $rootInfo.Status -eq 404) { Stop-Export (Get-AdminAccessGuidance $Target) }
 
     $ownerUser = $null
     if ($driveInfo.Json.owner) { $ownerUser = $driveInfo.Json.owner.user }
@@ -834,6 +838,7 @@ function Find-AutopilotWorkspaces($Client, $Location, [string]$GraphToken, [stri
     foreach ($address in $addresses) {
         $response = Invoke-JsonGet $Client $address $SharePointToken
         if ($response.Status -eq 401 -or $response.Status -eq 403) {
+            if ($script:TargetUserForGuidance) { Stop-Export (Get-AdminAccessGuidance $script:TargetUserForGuidance) }
             Stop-Export "OneDrive refused access (HTTP $($response.Status)). Your organization may restrict this sign-in. Nothing was downloaded."
         }
         if ($response.Status -ne 200 -or -not $response.Json) { continue }
@@ -1194,6 +1199,7 @@ function Invoke-AutopilotExport {
         if ($adminMode) {
             if ($userName -ieq $TargetUser) { Stop-Export 'You signed in as the target user. For your own data, run the script without -TargetUser.' }
             Write-Step "Finding the OneDrive of $TargetUser"
+            $script:TargetUserForGuidance = $TargetUser
             $location = Resolve-TargetDriveLocation $client $hostName $TargetUser $signIn.graph_token $signIn.sharepoint_token $TargetOneDriveUrl
             $owner = $location.Owner
             $graphDrivePath = 'users/' + [Uri]::EscapeDataString($TargetUser) + '/drive'

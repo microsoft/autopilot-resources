@@ -6,7 +6,7 @@ Autopilot keeps each user's workspace, including memories and sessions, in their
 
 You need a Windows PC. The tool uses Windows PowerShell, which is included with Windows, and Git, which it offers to install.
 
-1. Download [Autopilot-Workspace-Export.zip](./Autopilot-Workspace-Export.zip). Right-click it, choose **Extract All**, and open the extracted `Autopilot workspace export` folder. Do not run the tool from inside the zip file.
+1. Download [Autopilot-Workspace-Export.zip](./Autopilot-Workspace-Export.zip). Right-click it, choose **Extract All**, and open the extracted `Autopilot-Workspace-Export` folder. Do not run the tool from inside the zip file.
 2. Double-click `Export-AutopilotWorkspace.cmd`.
 3. If Git is missing, type `Y` to install Git for Windows with Windows Package Manager, then follow its prompts.
 4. Press Enter to continue, and choose **Yes** when Windows asks for administrator approval.
@@ -36,7 +36,7 @@ A tenant administrator can export another user's Autopilot workspace for an appr
    5. Copy the link that appears, for example `https://contoso-my.sharepoint.com/personal/user_contoso_com`. This is the user's OneDrive address.
 
    This makes you an administrator of that user's OneDrive until you remove the access. The grant is recorded in the audit log. It can take a few minutes to take effect.
-2. Open PowerShell in the extracted `Autopilot workspace export` folder and run this, using the link from step 1 as `-TargetOneDriveUrl`:
+2. Open PowerShell in the extracted `Autopilot-Workspace-Export` folder and run this, using the link from step 1 as `-TargetOneDriveUrl`:
 
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File .\Export-AutopilotWorkspace.ps1 -TargetUser user@contoso.com -Reason "Privacy request 1234" -Account admin@contoso.com -TargetOneDriveUrl "https://contoso-my.sharepoint.com/personal/user_contoso_com"

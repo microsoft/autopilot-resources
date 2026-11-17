@@ -835,12 +835,12 @@ function Find-AutopilotWorkspaces($Client, $Location, [string]$GraphToken, [stri
     } else {
         Write-Verbose "OneDrive search returned HTTP $($search.Status); checking the usual locations only."
     }
+    $refused = 0
     foreach ($address in $addresses) {
         $response = Invoke-JsonGet $Client $address $SharePointToken
-        if ($response.Status -eq 401 -or $response.Status -eq 403) {
-            if ($script:TargetUserForGuidance) { Stop-Export (Get-AdminAccessGuidance $script:TargetUserForGuidance) }
-            Stop-Export "OneDrive refused access (HTTP $($response.Status)). Your organization may restrict this sign-in. Nothing was downloaded."
-        }
+        Write-Verbose ("Checked " + $address.Substring($Location.DriveApi.Length).Split('?')[0] + ": HTTP $($response.Status)")
+        # One location can be refused (for example another user's special folder) while others are readable.
+        if ($response.Status -eq 401 -or $response.Status -eq 403) { $refused++; continue }
         if ($response.Status -ne 200 -or -not $response.Json) { continue }
         $item = $response.Json
         $id = [string]$item.id
@@ -853,6 +853,10 @@ function Find-AutopilotWorkspaces($Client, $Location, [string]$GraphToken, [stri
             Modified = [string]$item.lastModifiedDateTime
             GitUrl = "$($Location.DriveApi)/items/$([Uri]::EscapeDataString($id))/git"
         }
+    }
+    if ($found.Count -eq 0 -and $refused -gt 0) {
+        if ($script:TargetUserForGuidance) { Stop-Export (Get-AdminAccessGuidance $script:TargetUserForGuidance) }
+        Stop-Export "OneDrive refused access (HTTP 401 or 403). Your organization may restrict this sign-in. Nothing was downloaded."
     }
     @($found.Values)
 }

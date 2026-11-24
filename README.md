@@ -8,6 +8,10 @@ Resources for administrators and users of Autopilot in Microsoft Copilot, plus a
 
 ## Scout Desktop
 
+User tools:
+
+- [Manage Scout Desktop sessions offline](scout-sessions/README.md): list, search, copy, and delete Scout session files in a locally synced OneDrive folder, for example to bring chats from an old computer to a new one. Download for [macOS](scout-sessions/download/scout-sessions-1.0.2-macos.zip) or [Windows](scout-sessions/download/scout-sessions-1.0.2-windows.zip).
+
 Policy files for managing Scout Desktop:
 
 - Windows Group Policy: [microsoft-scout.admx](admins/microsoft-scout.admx) with [en-US/microsoft-scout.adml](admins/en-US/microsoft-scout.adml)
